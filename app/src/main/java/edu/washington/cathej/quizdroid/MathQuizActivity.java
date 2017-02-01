@@ -14,34 +14,35 @@ import static edu.washington.cathej.quizdroid.R.id.options;
 import static edu.washington.cathej.quizdroid.R.id.question;
 
 public class MathQuizActivity extends Activity {
-    private String[] questions = new String[] {
-            "Which one is the quadratic equation?",
-            "How what does i standfor?"
-    };
 
-    private String[] answers = new String[] {
-            "a^2 + b^2 = c^2",
-            "a + b = c",
-            "ax^2 + bx + c = 0",
-            "ax + b = 0",
-            "infinity",
-            "an indefinate number",
-            "a rudementry number",
-            "an imaginary number"
-    };
-
-    private int[] correctAnswerIndex = new int[] {
-            2, 3
-    };
+    private String[] questions;
+    private String[] answers;
+    private int[] correctAnswerIndex;
 
     private int questionNum = 0;
-
     private int correctAnswers = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_quiz);
+
+        // To be able to grab information from last activity
+        Intent i = getIntent();
+        String quizName = i.getStringExtra("quizName");
+        questions = i.getStringArrayExtra("questions");
+        answers = i.getStringArrayExtra("answers");
+        correctAnswerIndex = i.getIntArrayExtra("correctAnswers");
+
+
+        TextView name = (TextView) findViewById(R.id.name);
+        name.setText(quizName);
+        TextView description = (TextView) findViewById(R.id.description);
+        description.setText("This topic centers around the magical world of " + quizName
+                + " and the wonderous things you can learn from it");
+        TextView count = (TextView) findViewById(R.id.count);
+        count.setText("Number of questions: " + questions.length);
+
 
         final LinearLayout questionPage = (LinearLayout) findViewById(R.id.questionpage);
         final LinearLayout answerPage = (LinearLayout) findViewById(R.id.answerpage);
@@ -59,6 +60,17 @@ public class MathQuizActivity extends Activity {
         final Button submit = (Button) findViewById(R.id.submit);
         final Button next = (Button) findViewById(R.id.next);
         final Button finish = (Button) findViewById(R.id.finish);
+
+        Button begin = (Button) findViewById(R.id.begin);
+        begin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout overview = (LinearLayout) findViewById(R.id.overview);
+                overview.setVisibility(View.GONE);
+                submit.setVisibility(View.VISIBLE);
+                questionPage.setVisibility(View.VISIBLE);
+            }
+        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +92,7 @@ public class MathQuizActivity extends Activity {
                     }
 
                     yAnswer.setText("Your answer: " + answers[questionNum * 4 + answerIndex]);
-                    mAnswer.setText("My answer: " + answers[correctAnswerIndex[questionNum]]);
+                    mAnswer.setText("My answer: " + answers[questionNum * 4 + correctAnswerIndex[questionNum]]);
                     questionNum++;
                     total.setText("You have " + correctAnswers + " out of " + questionNum
                             + " correct");
