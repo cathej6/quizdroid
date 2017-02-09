@@ -1,29 +1,15 @@
 package edu.washington.cathej.quizdroid;
 
 import android.app.Activity;
-import android.app.FragmentManager;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.app.Fragment;
 
-import static android.R.attr.fragment;
-import static edu.washington.cathej.quizdroid.R.id.finish;
-import static edu.washington.cathej.quizdroid.R.id.next;
-import static edu.washington.cathej.quizdroid.R.id.options;
-import static edu.washington.cathej.quizdroid.R.id.question;
-import static edu.washington.cathej.quizdroid.R.id.submit;
-import static edu.washington.cathej.quizdroid.R.id.total;
-import static edu.washington.cathej.quizdroid.R.id.yanswer;
-
-public class MathQuizActivity extends Activity {
+public class QuizActivity extends Activity {
 
     private String[] questions;
     private String[] answers;
@@ -39,12 +25,10 @@ public class MathQuizActivity extends Activity {
     private QuestionFragment questionFragment;
     private AnswerFragment answerFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_math_quiz);
-
+        setContentView(R.layout.activity_quiz);
         // To be able to grab information from last activity
         Intent i = getIntent();
         String quizName = i.getStringExtra("quizName");
@@ -58,17 +42,14 @@ public class MathQuizActivity extends Activity {
         overviewFragment = new OverviewFragment();
         overviewFragment.setArguments(bOverview);
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.overview, overviewFragment);
-        ft.commit();
+        commitTransaction(overviewFragment);
 
         final Button button = (Button) findViewById(R.id.button);
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (status == stages[0] || (status == stages[2] && button.getText() == "Next")) {
+                if (status.equals(stages[0]) || (status.equals(stages[2]) && button.getText() == "Next")) {
                     Bundle bQuestion = new Bundle();
                     bQuestion.putStringArray("questions", questions);
                     bQuestion.putStringArray("answers", answers);
@@ -77,12 +58,11 @@ public class MathQuizActivity extends Activity {
                     questionFragment = new QuestionFragment();
                     questionFragment.setArguments(bQuestion);
 
-                    FragmentTransaction tx = getFragmentManager().beginTransaction();
-                    tx.replace(R.id.overview, questionFragment);
-                    tx.commit();
+                    commitTransaction(questionFragment);
+
                     status = stages[1];
                     button.setText("Submit");
-                } else if (status == stages[1] &&
+                } else if (status.equals(stages[1]) &&
                         questionFragment.options.getCheckedRadioButtonId() != -1) {
                     if (questionNum == questions.length - 1) {
                         button.setText("Finish");
@@ -108,19 +88,23 @@ public class MathQuizActivity extends Activity {
                     bAnswer.putString("mAnswer", mAnswer);
                     bAnswer.putString("total", total);
 
-                    final AnswerFragment answerFragment = new AnswerFragment();
+                    answerFragment = new AnswerFragment();
                     answerFragment.setArguments(bAnswer);
 
-                    FragmentTransaction tx = getFragmentManager().beginTransaction();
-                    tx.replace(R.id.overview, answerFragment);
-                    tx.commit();
-                    status = stages[2];
+                    commitTransaction(answerFragment);
 
-                } else if (status == stages[2] && button.getText() == "Finish") {
+                    status = stages[2];
+                } else if (status.equals(stages[2]) && button.getText().equals("Finish")) {
                     Intent intent = new Intent(v.getContext(), MainActivity.class);
                     v.getContext().startActivity(intent);
                 }
             }
         });
+    }
+
+    public void commitTransaction(Fragment f) {
+        FragmentTransaction tx = getFragmentManager().beginTransaction();
+        tx.replace(R.id.content, f);
+        tx.commit();
     }
 }

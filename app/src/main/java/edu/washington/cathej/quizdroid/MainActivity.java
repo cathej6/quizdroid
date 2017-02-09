@@ -2,8 +2,6 @@ package edu.washington.cathej.quizdroid;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.content.Intent;
@@ -13,8 +11,6 @@ import android.view.View;
 import android.util.Log;
 
 import java.io.Serializable;
-
-import static android.R.id.input;
 
 public class MainActivity extends Activity {
 
@@ -105,7 +101,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String itemValue = (String) parent.getItemAtPosition(position);
                 Log.i("clicktests", "ItemValue is " + itemValue);
-                Intent intent = new Intent(MainActivity.this, MathQuizActivity.class);
+                Intent intent = new Intent(MainActivity.this, QuizActivity.class);
                 //intent.putExtra("quiz", quizes[position]);
 
                 intent.putExtra("quizName", quizes[position].name);
@@ -134,10 +130,6 @@ public class MainActivity extends Activity {
             this.questions = questions;
             this.answers = answers;
             this.correctAnswers = correctAnswers;
-        }
-
-        private Quiz(Parcel in) {
-
         }
     }
 }
