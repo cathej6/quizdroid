@@ -78,14 +78,14 @@ public class OverviewFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_overview, container, false);
 
+        Topic topic = (Topic) getArguments().getSerializable("topic");
+
         name = (TextView) view.findViewById(R.id.name);
-        name.setText(getArguments().getString("quizName"));
+        name.setText(topic.getTitle());
         description = (TextView) view.findViewById(R.id.description);
-        description.setText("This topic centers around the magical world of " +
-                getArguments().getString("quizName") +
-                " and the wonderous things you can learn from it");
+        description.setText(topic.getDescription());
         count = (TextView) view.findViewById(R.id.count);
-        count.setText("Number of questions: " + getArguments().getInt("count"));
+        count.setText("Number of questions: " + topic.getQuestions().size());
 
         return view;
     }

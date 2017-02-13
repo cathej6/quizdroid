@@ -69,21 +69,24 @@ public class AnswerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View v = inflater.inflate(R.layout.fragment_answer, container, false);
 
         yAnswer = (TextView) v.findViewById(R.id.yanswer);
         mAnswer = (TextView) v.findViewById(R.id.manswer);
         total = (TextView) v.findViewById(R.id.total);
 
-        yAnswer.setText(getArguments().getString("yAnswer"));
-        mAnswer.setText(getArguments().getString("mAnswer"));
-        total.setText(getArguments().getString("total"));
+        Topic topic = (Topic) getArguments().getSerializable("topic");
+        int answerIndex = getArguments().getInt("answerIndex");
+        int correctAnswers = getArguments().getInt("correctAnswers");
+        int questionNum = getArguments().getInt("questionNum");
 
+        yAnswer.setText("Your answer: "
+                + topic.getQuestions().get(questionNum - 1).getAnswers()[answerIndex]);
+        mAnswer.setText("My answer: "
+                + topic.getQuestions().get(questionNum - 1).getCorrectAnswer());
+        total.setText("You have " + correctAnswers + " out of " + questionNum + " correct");
 
         return v;
-
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

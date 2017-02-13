@@ -11,12 +11,10 @@ import android.view.View;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
-
-    private String[] topics = new String[] {
-        "Math", "Physics", "Marvel Super Heroes", "Harry Potter"
-    };
 
     private Quiz[] quizes = new Quiz[4];
 
@@ -24,6 +22,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.i("setup", "The application has been created.");
 
         quizes[0]= new Quiz("Math",
                 new String[] {
@@ -90,8 +90,20 @@ public class MainActivity extends Activity {
                 },
                 new int[] {3, 0});
 
+        QuizApp app = (QuizApp)this.getApplication();
+        final List<Topic> topics = app.getRepository().getAllTopics();
+
+        if (topics.size() < 4) {
+            buildTopics(topics, quizes);
+        }
+
+        String[] topicTitles = new String[topics.size()];
+        for (int i = 0; i < topics.size(); i++) {
+            topicTitles[i] = topics.get(i).getTitle();
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, topics);
+                android.R.layout.simple_list_item_1, topicTitles);
         ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(adapter);
 
@@ -99,25 +111,36 @@ public class MainActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String itemValue = (String) parent.getItemAtPosition(position);
-                Log.i("clicktests", "ItemValue is " + itemValue);
                 Intent intent = new Intent(MainActivity.this, QuizActivity.class);
-                //intent.putExtra("quiz", quizes[position]);
-
-                intent.putExtra("quizName", quizes[position].name);
-                intent.putExtra("questions", quizes[position].questions);
-                intent.putExtra("answers", quizes[position].answers);
-                intent.putExtra("correctAnswers", quizes[position].correctAnswers);
-
+                intent.putExtra("topic", topics.get(position));
                 MainActivity.this.startActivity(intent);
-
             }
         });
+    }
+
+    public void buildTopics(List<Topic> topics, Quiz[] data) {
+        for (int i = 0; i < data.length; i++) {
+            Quiz thisQuiz = data[i];
+            List<Question> questionList = new ArrayList<Question>();
+
+            for (int j = 0; j < thisQuiz.questions.length; j++) {
+                String[] thisQuestionsAnswers = new String[4];
+                for (int k = 0; k < 4; k++) {
+                    thisQuestionsAnswers[k] = thisQuiz.answers[k + (j * 4)];
+                }
+                Question newQuestion = new Question(thisQuiz.questions[j], thisQuestionsAnswers,
+                        thisQuiz.correctAnswers[j]);
+                questionList.add(newQuestion);
+            }
+            Topic newTopic = new Topic(thisQuiz.name, thisQuiz.description, questionList);
+            topics.add(newTopic);
+        }
     }
 
     public class Quiz implements Serializable{
         // specify tip amount
         public String name;
+        public String description;
 
         public String[] questions;
         public String[] answers;
@@ -127,6 +150,8 @@ public class MainActivity extends Activity {
         // constructor to set tip
         public Quiz(String name, String[] questions, String[] answers, int[] correctAnswers){
             this.name = name;
+            this.description = "This topic centers around the magical world of " + name +
+                    " and the wonderous things you can learn from it";
             this.questions = questions;
             this.answers = answers;
             this.correctAnswers = correctAnswers;

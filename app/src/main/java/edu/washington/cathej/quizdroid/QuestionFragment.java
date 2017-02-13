@@ -72,13 +72,14 @@ public class QuestionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_question, container, false);
-        String[] answers = getArguments().getStringArray("answers");
 
-        TextView question = (TextView) v.findViewById(R.id.question);
-        question.setText(getArguments().getStringArray("questions")[0]);
+        Question question = (Question) getArguments().getSerializable("question");
+
+        TextView questionText = (TextView) v.findViewById(R.id.question);
+        questionText.setText(question.getText());
 
         options = (RadioGroup) v.findViewById(R.id.options);
-        createRadioButtons(options, answers, getArguments().getInt("questionNum"));
+        createRadioButtons(options, question.getAnswers(), getArguments().getInt("questionNum"));
         return v;
     }
 
@@ -124,7 +125,7 @@ public class QuestionFragment extends Fragment {
     public void createRadioButtons(RadioGroup options, String[] answers, int questionNum) {
         for (int i = 0; i < 4; i++) {
             RadioButton option = new RadioButton(getActivity());
-            option.setText(answers[questionNum * 4 + i]);
+            option.setText(answers[i]);
             options.addView(option);
         }
     }
