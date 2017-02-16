@@ -67,8 +67,8 @@ public class MainActivity extends Activity {
         intent.putExtra("url", dataUrl);
         alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() +
-                        100, 100, alarmIntent);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + 100, 100, alarmIntent);
     }
 
     @Override

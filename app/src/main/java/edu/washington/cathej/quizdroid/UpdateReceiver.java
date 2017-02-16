@@ -20,6 +20,8 @@ public class UpdateReceiver extends BroadcastReceiver {
         Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
         toast.show();
 
+        // Update TopicRepo :) context.
+
         Log.i("debug", "downloading complete for url: " + intent.getStringExtra("url"));
         text = "Download Complete from : " + intent.getStringExtra("url");
         toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);

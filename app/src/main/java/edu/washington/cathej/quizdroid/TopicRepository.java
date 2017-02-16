@@ -20,11 +20,15 @@ public class TopicRepository {
     private boolean initialized = false;
 
 
+    public void updateTopics() throws IOException {
+        File questions = new File(Environment.getExternalStorageDirectory(), "questions.json");
+        InputStream is = new FileInputStream(questions);
+        buildTopics(new JsonReader(new InputStreamReader(is)));
+    }
+
     public List<Topic> getAllTopics() throws IOException {
         if (!initialized) {
-            File questions = new File(Environment.getExternalStorageDirectory(), "questions.json");
-            InputStream is = new FileInputStream(questions);
-            buildTopics(new JsonReader(new InputStreamReader(is)));
+            updateTopics();
             initialized = true;
         }
         return topics;
