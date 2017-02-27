@@ -4,10 +4,16 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuizActivity extends Activity {
 
@@ -47,7 +53,14 @@ public class QuizActivity extends Activity {
 
     // Initaializes basic content that is needed to run the activity.
     public void initializeState(Intent i) {
-        topic = (Topic) i.getSerializableExtra("topic");
+        QuizApp app = (QuizApp)this.getApplication();
+        List<Topic> topics;
+        try {
+            topics = app.getRepository().getAllTopics();
+        } catch (IOException ex) {
+            topics = new ArrayList<Topic>();
+        }
+        topic = (Topic) topics.get(i.getIntExtra("topicPosition", 0));
 
         Bundle bOverview = new Bundle();
         bOverview.putSerializable("topic", topic);

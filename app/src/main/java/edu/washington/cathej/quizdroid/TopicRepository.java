@@ -21,6 +21,7 @@ public class TopicRepository {
 
 
     public void updateTopics() throws IOException {
+        topics.clear();
         File questions = new File(Environment.getExternalStorageDirectory(), "questions.json");
         InputStream is = new FileInputStream(questions);
         buildTopics(new JsonReader(new InputStreamReader(is)));

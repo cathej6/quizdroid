@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("url", "http://tednewardsandbox.site44.com/questions.json");
-        editor.putString("updateTime","1");
+        editor.putString("updateTime","3");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, topicTitles);
@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, QuizActivity.class);
-                intent.putExtra("topic", topics.get(position));
+                intent.putExtra("topicPosition", position);
                 MainActivity.this.startActivity(intent);
             }
         });
