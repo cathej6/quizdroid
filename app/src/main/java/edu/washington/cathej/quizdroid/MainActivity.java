@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,8 +27,6 @@ public class MainActivity extends Activity {
     private List<Topic> topics;
     private PendingIntent alarmIntent;
     private AlarmManager alarmManager;
-    private String dataUrl = "www.tedneward.com";
-    private int updateTime = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,11 @@ public class MainActivity extends Activity {
             topicTitles[i] = topics.get(i).getTitle();
         }
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("url", "http://tednewardsandbox.site44.com/questions.json");
+        editor.putString("updateTime","1");
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, topicTitles);
         ListView listView = (ListView) findViewById(R.id.listView);
@@ -64,11 +69,12 @@ public class MainActivity extends Activity {
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(MainActivity.this, UpdateReceiver.class);
-        intent.putExtra("url", dataUrl);
-        alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+        alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 100, 100, alarmIntent);
+                SystemClock.elapsedRealtime() + 100,
+                60000 * Integer.parseInt(pref.getString("updateTime", "1")), alarmIntent);
     }
 
     @Override
@@ -97,8 +103,6 @@ public class MainActivity extends Activity {
 
     public void goToPreferences() {
         Intent intent = new Intent(MainActivity.this, PreferencesActivity.class);
-        intent.putExtra("dataUrl", dataUrl);
-        intent.putExtra("updateTime", updateTime);
         MainActivity.this.startActivity(intent);
     }
 }
