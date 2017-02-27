@@ -72,7 +72,7 @@ public class UpdateReceiver extends BroadcastReceiver {
 
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        UpdateReceiver.updateData(context1);
+                        //UpdateReceiver.updateData(context1);
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
